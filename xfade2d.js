@@ -15,7 +15,7 @@ define(['./domUtils'], function(du) {
 
     };
   
-    var pluginFunction = function(args, resources) {
+    var initPlugin = function(args) {
 
         // CANVAS-RELATED CODE
 
@@ -157,11 +157,6 @@ define(['./domUtils'], function(du) {
 
         // Initialization made it so far: plugin is ready.
         args.hostInterface.setInstanceStatus ('ready');
-    };
-    
-    
-    var initPlugin = function(args) {
-        pluginFunction.call (this, args);
     };
         
     return {
