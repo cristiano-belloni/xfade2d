@@ -26,21 +26,21 @@ define(['./domUtils'], function(du) {
         this.handleMouseOver = function(e) {
             this.isMouseInside = true;
             this.isMouseDown = false;
-        };
+        }.bind(this);
 
         this.handleMouseDown = function(e) {
             console.log ("mouse down");
             this.isMouseDown = true;
             this.handleMouseMove(e);
-        };
+        }.bind(this);
 
         this.handleMouseUp = function(e) {
             this.isMouseDown = false;
-        };
+        }.bind(this);
 
         this.handleMouseOut = function(e) {
             this.isMouseInside = false;
-        };
+        }.bind(this);
 
         this.handleMouseMove = function(e) {
             if (this.isMouseInside && this.isMouseDown) {
@@ -51,13 +51,13 @@ define(['./domUtils'], function(du) {
                 // Re-render the canvas.
                 this.render();
             }
-        };
+        }.bind(this);
 
-        this.canvas.addEventListener('mouseover', this.handleMouseOver.bind(this));
-        this.canvas.addEventListener('mouseout', this.handleMouseOut.bind(this));
-        this.canvas.addEventListener('mousedown', this.handleMouseDown.bind(this));
-        this.canvas.addEventListener('mouseup', this.handleMouseUp.bind(this));
-        this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this));
+        this.canvas.addEventListener('mouseover', this.handleMouseOver);
+        this.canvas.addEventListener('mouseout', this.handleMouseOut);
+        this.canvas.addEventListener('mousedown', this.handleMouseDown);
+        this.canvas.addEventListener('mouseup', this.handleMouseUp);
+        this.canvas.addEventListener('mousemove', this.handleMouseMove);
 
         this.render = function () {
 
@@ -132,7 +132,19 @@ define(['./domUtils'], function(du) {
         this.gainNodeB.connect(this.gainNode);
         this.gainNode.connect(this.audioDestination);
 
-        // TODO SET A DESTROY FUNCTION
+        // Destructor function
+        args.hostInterface.setDestructor (function () {
+            this.gainNode.disconnect();
+            this.gainNodeA.disconnect();
+            this.gainNodeB.disconnect();
+            this.audioSourceA.disconnect();
+            this.audioSourceB.disconnect();
+            this.canvas.removeEventListener('mouseover', this.handleMouseOver);
+            this.canvas.removeEventListener('mouseout', this.handleMouseOut);
+            this.canvas.removeEventListener('mousedown', this.handleMouseDown);
+            this.canvas.removeEventListener('mouseup', this.handleMouseUp);
+            this.canvas.removeEventListener('mousemove', this.handleMouseMove);
+        }.bind(this));
 
         // END OF AUDIO-RELATED CODE        
 
